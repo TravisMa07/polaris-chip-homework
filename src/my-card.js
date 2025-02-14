@@ -1,10 +1,5 @@
 import { LitElement, html, css } from 'lit';
 
-/**
- * Now it's your turn. Here's what we need to try and do:
- * 1. Get you HTML from your card working in here 
- * 2. Get your CSS rescoped as needed to work here
- */
 
 export class MyCard extends LitElement {
 
@@ -17,6 +12,7 @@ export class MyCard extends LitElement {
     this.title = "The Goat Lebron James";
     this.image = 'https://people.com/thmb/zWm7qonVB_6R3JTGC583rNoiQWY=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(719x209:721x211):format(webp)/lebron-james-bbd6f753bf124dfcb4d7e6b3284970f3.jpg';
     this.desc = 'Default Description';
+    this.fancy = false;
   }
 
   static get styles() {
@@ -33,18 +29,38 @@ export class MyCard extends LitElement {
   padding: 8px 8px 8px 8px;
   margin: 4px 4px 4px 4px;
 }
-.card-item{
-  display: inine flex;
+  .card-item{
+  display: inline-flex;
   background-color:#FFFF00;
   max-width: 400px;
   padding: 8px;
   margin: 8px;
   border: 8px solid black;
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: left;
+}
+
+:host([fancy]) {
+display: block;
+  background-color: pink;
+  border: 16px solid fuchsia;
+  box-shadow: 10px 5px 5px red;
 }
 
 .card-image{
-  max-width: 300px;
+  width: 100%;
+  height: auto;
   max-height: 250px;
+  object-fit: cover;
+  aspect-ratio: 16/9;
+}
+
+.card-desc{
+  font-size: 16px;
+  max-height: 100px;
+  padding: 8px;
+  border-radius: 4px;
 }
 
 .change-color{
@@ -52,27 +68,67 @@ export class MyCard extends LitElement {
 }
 
 .card-title{
-  font-size: 26px;
+  font-size: 20px;
+  margin: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
+
+
+details summary {
+    text-align: left;
+    font-size: 20px;
+    padding: 8px 0;
+  }
+
+  details[open] summary {
+    font-weight: bold;
+  }
+  
+  details div {
+    border: 2px solid black;
+    text-align: left;
+    padding: 8px;
+    height: 70px;
+    overflow: auto;
+  }
 
     `;
   }
   
+  
+  openChanged(e) {
+    console.log(e.newState);
+    if (e.newState === "open") {
+      this.fancy = true;
+    }
+    else {
+      this.fancy = false;
+    }
+  }
 
   render() {
     return html`
         <div class="card-item">
         <img src="${this.image}" alt="${this.title}" class="card-image" />
-        <div>
           <h2 class="card-title">${this.title}</h2>
-          <p>${this.desc}</p>
+  <details ?open="${this.fancy}" @toggle="${this.openChanged}">
+  <summary>Description</summary>
+  <div>
+    <p class="card-desc">${this.desc}</p>
+    <slot>${this.desc}</slot>
+    <a href="${this.link}" target="_blank"></a>
+  </div>
+</details>
         </div>
-      </div>
+     
       `;
   }
 
   static get properties() {
     return {
+      fancy: { type: Boolean, reflect: true },
       title: { type: String },
       link: { type: String},
       desc: {type: String},
