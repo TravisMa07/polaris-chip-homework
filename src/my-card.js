@@ -117,8 +117,7 @@ details summary {
   <details ?open="${this.fancy}" @toggle="${this.openChanged}">
   <summary>Description</summary>
   <div>
-    <p class="card-desc">${this.desc}</p>
-    <slot>${this.desc}</slot>
+    <slot name="desc">${this.desc}</slot>
   </div>
 </details>
         </div>
